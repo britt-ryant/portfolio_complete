@@ -1,6 +1,7 @@
 const passport = require('passport');
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const GitHubStrategy = require('passport-github2').Strategy;
 
 
 passport.use(
@@ -17,13 +18,26 @@ passport.use(
     )
 );
 
+passport.use(
+    new GitHubStrategy(
+        {
+            clientID: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            callbackURL: "/auth/github/callback",
+            passReqToCallback: true,
+            scope:['profile:email'],
+        },
+        function(req, accessToken, refreshToken, profile, callback){
+            console.log(profile);
+            callback(null, profile);
+        }
+    )
+);
+
 passport.serializeUser((user, done) => {
-    // console.log(`serializer`);
-    // console.log(user);
     done(null, user)
 });
 
 passport.deserializeUser((user, done) => {
-    // console.log(`HEREREREEERERRER`);
     done(null, user)
 })

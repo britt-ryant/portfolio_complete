@@ -29,15 +29,25 @@ router.get(
 )
 
 router.get('/google', (req, res) => {
-    console.log(`in google`);
     passport.authenticate("google", ["profile", "email"])
-    
 }
 );
+router.get(
+    "/github/callback",
+    passport.authenticate("github", {
+        successRedirect: process.env.CLIENT_URL,
+        failureRedirect: "/login/failed"
+    })
+)
+
+router.get('/github', (req, res) => {
+    passport.authenticate("github",{scope: ["user:email"] } )
+}
+);
+
 router.get('/logout', (req, res) => {
-    console.log(`hit it`);
     req.logout();
-    //res.redirect(process.env.CLIENT_URL)
+    res.redirect(process.env.CLIENT_URL)
 });
 
 module.exports = router;
